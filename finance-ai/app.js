@@ -231,17 +231,19 @@ function showSuggestions() {
   matches.forEach(match => {
     const div = document.createElement('div');
     div.innerHTML = match.question;
+
+    // Add click event to each suggestion to automatically fetch the answer
     div.onclick = () => {
       document.getElementById('questionInput').value = match.question;
-      suggestionsDiv.innerHTML = "";
+      getAnswer(match.question); // Call getAnswer directly with the clicked question
+      suggestionsDiv.innerHTML = ""; // Clear suggestions
     };
     suggestionsDiv.appendChild(div);
   });
 }
 
-async function getAnswer() {
-  const inputElement = document.getElementById('questionInput');
-  const userInput = preprocess(inputElement.value);
+async function getAnswer(question) {
+  const userInput = preprocess(question);
   const answerText = document.getElementById('answerText');
   const suggestionsDiv = document.getElementById('suggestions');
 
