@@ -112,6 +112,14 @@ th, td {
 }
 
 /* Budget color indicators */
-.budget-green { color: green; }
-.budget-orange { color: orange; }
-.budget-red { color: red; }
+.budget-green {
+    color: #28a745;
+}
+
+.budget-orange {
+    color: #ffca28;
+}
+
+.budget-red {
+    color: #e53935; 
+}
