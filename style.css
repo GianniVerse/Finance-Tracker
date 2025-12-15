@@ -6,7 +6,6 @@ body {
     padding: 20px;
 }
 
-/* Card style for inputs */
 .input-card {
     background: #fff;
     padding: 15px;
@@ -41,7 +40,6 @@ button:hover {
     background: #0056b3;
 }
 
-/* Expense Table */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -57,7 +55,6 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 
-/* Budget overlay */
 .overlay {
     display: flex; 
     align-items: center;
@@ -78,7 +75,6 @@ th, td {
     text-align: center;
 }
 
-/* Budget display corner */
 #budgetDisplay {
     position: fixed;
     top: 10px;
@@ -91,7 +87,6 @@ th, td {
     border-radius: 5px;
 }
 
-/* Budget progress bar container */
 #budgetProgressContainer {
     width: 200px;
     height: 15px;
@@ -102,7 +97,6 @@ th, td {
     border: 1px solid #ccc;
 }
 
-/* Budget progress fill */
 #budgetProgress {
     height: 100%;
     width: 0%;
@@ -111,7 +105,6 @@ th, td {
     border-radius: 8px;
 }
 
-/* Budget color indicators */
 .budget-green {
     color: #28a745;
 }
@@ -123,7 +116,7 @@ th, td {
 .budget-red {
     color: #e53935; 
 }
-/* FAQ Modal Overlay */
+
 .faq-overlay {
     display: flex; 
     align-items: center;
@@ -154,7 +147,6 @@ th, td {
     margin-top: 20px;
 }
 
-/* Close Button Styling */
 #closeFaqBtn {
     position: absolute;
     top: 10px;

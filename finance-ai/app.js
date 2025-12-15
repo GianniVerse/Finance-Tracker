@@ -211,13 +211,10 @@ const financeQA = [
   { question: "What are common crypto mistakes?", "topic": "Crypto Security", "answer": "Common mistakes include investing without research, using insecure wallets, trading impulsively, and ignoring risk management." }
 ];
 
-
-// ==================== Utilities ====================
 function preprocess(text) {
   return text.toLowerCase().replace(/[^\w\s]/g, "").trim();
 }
 
-// ==================== Auto-Complete Suggestions ====================
 function showSuggestions() {
   const input = preprocess(document.getElementById('questionInput').value);
   const suggestionsDiv = document.getElementById('suggestions');
@@ -232,11 +229,10 @@ function showSuggestions() {
     const div = document.createElement('div');
     div.innerHTML = match.question;
 
-    // Add click event to each suggestion to automatically fetch the answer
     div.onclick = () => {
       document.getElementById('questionInput').value = match.question;
-      getAnswer(match.question); // Call getAnswer directly with the clicked question
-      suggestionsDiv.innerHTML = ""; // Clear suggestions
+      getAnswer(match.question);
+      suggestionsDiv.innerHTML = "";
     };
     suggestionsDiv.appendChild(div);
   });
@@ -247,7 +243,6 @@ async function getAnswer(question) {
   const answerText = document.getElementById('answerText');
   const suggestionsDiv = document.getElementById('suggestions');
 
-  // Clear previous suggestions
   suggestionsDiv.innerHTML = "";
 
   if (!userInput) {
@@ -255,14 +250,12 @@ async function getAnswer(question) {
     return;
   }
 
-  // Find best match using includes for flexibility
   const exactMatch = financeQA.find(q => preprocess(q.question) === userInput);
   if (exactMatch) {
     answerText.innerHTML = `<strong>Topic: ${exactMatch.topic}</strong><br>${exactMatch.answer}`;
     return;
   }
 
-  // If no exact match, suggest similar questions
   const similarQuestions = financeQA
     .filter(q => preprocess(q.question).includes(userInput))
     .slice(0, 3);

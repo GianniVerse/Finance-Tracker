@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your go-to finance tracker, FAQ, and money converter tool. Manage your finances with ease!">
+    <title>Finance Hub - Track, Convert, Learn</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        nav {
+            padding: 10px 0;
+            text-align: left;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 5px;
+            background-color: #007bff;
+            display: inline-block;
+            font-size: 14px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        nav a:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        nav a:active {
+            background-color: #003f7f;
+            border-color: #003f7f;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Welcome to Finance Hub</h1>
+        <p>Your go-to platform for tracking your finances, converting currencies, and learning about money management.</p>
+    </header>
+
+    <nav>
+        <a href="finance.html">Finance Tracker</a>
+        <a href="javascript:void(0);" onclick="showFaqOverlay()">FAQ</a>
+        <a href="money-conv/converter.html">Money Converter</a>
+    </nav>
+
+    <div class="content">
+        <section id="tracker" class="section">
+            <h2>Finance Tracker</h2>
+            <p>Keep track of your spending and savings easily. Use our finance tracker tool to set a budget, track your expenses, and achieve your financial goals. It's simple and intuitive!</p>
+            <button onclick="window.location.href='finance.html';">Start Tracking</button>
+        </section>
+
+        <section id="faq" class="section faq">
+            <h2>Our Frequently Asked Questions</h2>
+            <p>Get quick answers to your questions with our comprehensive FAQ section. Whether you're wondering about how to use our finance tracker, the accuracy of our currency converter, or how to manage your financial goals, we've got you covered. It's easy to find the information you need!</p>
+            <button onclick="showFaqOverlay()">Our FAQ</button>
+        </section>
+
+        <section id="converter" class="section">
+            <h2>Currency Converter</h2>
+            <p>Our website also includes a <strong>currency converter tool</strong> that allows you to quickly convert between different currencies. Simply input the amount and select the currencies you wish to convert, and our system will show you the real-time exchange rates for a variety of global currencies. Stay updated and make informed financial decisions wherever you are!</p>
+            <button onclick="window.location.href='money-conv/converter.html';">Convert Money</button>
+        </section>
+    </div>
+
+    <div class="faq-overlay" id="faqOverlay" style="display: none;">
+        <div class="faq-overlay-content">
+            <button id="closeFaqBtn">X</button>
+            <h2>FAQs</h2>
+            <iframe id="faqIframe" src="finance-ai/faq.html" title="FAQ Content"></iframe>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Finance Hub | All Rights Reserved</p>
+    </footer>
+
+
+    <script>
+        function showFaqOverlay() {
+            const faqOverlay = document.getElementById('faqOverlay');
+            faqOverlay.style.display = 'flex';
+        }
+
+        const closeFaqBtn = document.getElementById('closeFaqBtn');
+        closeFaqBtn.addEventListener('click', function () {
+            const faqOverlay = document.getElementById('faqOverlay');
+            faqOverlay.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>

@@ -12,7 +12,6 @@ let expenses = [];
 let totalBudget = 0;
 let editingExpenseId = null;
 
-// DOM elements
 const nameInput = document.getElementById('name');
 const amountInput = document.getElementById('amount');
 const mainCategorySelect = document.getElementById('mainCategory');
@@ -33,7 +32,6 @@ const overBudgetOverlay = document.getElementById('overBudgetOverlay');
 const overBudgetOkBtn = document.getElementById('overBudgetOkBtn');
 overBudgetOkBtn.addEventListener('click', () => overBudgetOverlay.style.display = 'none');
 
-// Populate main category dropdown
 mainCategories.forEach(cat => {
     const option = document.createElement("option");
     option.value = cat;
@@ -41,7 +39,6 @@ mainCategories.forEach(cat => {
     mainCategorySelect.appendChild(option);
 });
 
-// Update subcategories dropdown
 function updateSubCategories() {
     const selectedMain = mainCategorySelect.value;
     const subs = categoryMap[selectedMain];
@@ -57,7 +54,6 @@ function updateSubCategories() {
 updateSubCategories();
 mainCategorySelect.addEventListener('change', updateSubCategories);
 
-// Add or update expense
 addBtn.addEventListener('click', () => {
     const name = nameInput.value.trim();
     let amount = Number(amountInput.value);
@@ -69,15 +65,11 @@ addBtn.addEventListener('click', () => {
     if (name === "" || amount <= 0 || date === "") return;
 
     if (editingExpenseId) {
-        // Update existing expense
         const expenseIndex = expenses.findIndex(exp => exp.id === editingExpenseId);
         expenses[expenseIndex] = { id: editingExpenseId, name, amount, mainCat, subCat, date };
-
-        // Reset edit mode
         editingExpenseId = null;
         addBtn.textContent = "Add Expense";
     } else {
-        // Add new expense
         expenses.push({ id: Date.now(), name, amount, mainCat, subCat, date });
     }
 
@@ -86,12 +78,9 @@ addBtn.addEventListener('click', () => {
     expenseDateInput.value = "";
     mainCategorySelect.value = mainCategories[0];
     updateSubCategories();
-
-    // Re-render the table
     render();
 });
 
-// Set initial budget
 setBudgetBtn.addEventListener('click', () => {
     const budget = Number(initialBudgetInput.value);
     if (budget <= 0) return alert("Enter a valid budget.");
@@ -100,7 +89,6 @@ setBudgetBtn.addEventListener('click', () => {
     budgetOverlay.style.display = 'none';
 });
 
-// Render the expense table and update budget display
 function render() {
     expenseTable.innerHTML = "";
     expenses.forEach(expense => {
@@ -121,46 +109,38 @@ function render() {
         expenseTable.appendChild(tr);
     });
 
-    // Update total amount
     updateTotal();
     updateCategoryTotals();
     updateBudgetDisplay();
 }
 
-// Edit expense
 function editExpense(id) {
     const expense = expenses.find(exp => exp.id === id);
     if (expense) {
-        // Populate input fields with current expense values
         nameInput.value = expense.name;
         amountInput.value = expense.amount;
         expenseDateInput.value = expense.date;
         mainCategorySelect.value = expense.mainCat;
         updateSubCategories();
         subCategorySelect.value = expense.subCat;
-
-        // Change button to "Save Expense"
         addBtn.textContent = "Save Expense";
         editingExpenseId = expense.id;
     }
 }
 
-// Delete expense
 function deleteExpense(id) {
     const index = expenses.findIndex(exp => exp.id === id);
     if (index !== -1) {
         expenses.splice(index, 1);
-        render(); // Re-render the table after deletion
+        render();
     }
 }
 
-// Update the total expenses
 function updateTotal() {
     const total = expenses.reduce((sum, e) => sum + e.amount, 0);
     totalSpan.textContent = total.toFixed(2);
 }
 
-// Update category totals
 function updateCategoryTotals() {
     const totals = {};
     expenses.forEach(e => {
@@ -180,25 +160,20 @@ function updateCategoryTotals() {
     });
 }
 
-// Update the budget display (remaining budget and progress bar)
 function updateBudgetDisplay() {
     const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
     const remaining = totalBudget - totalExpenses;
     const remainingFormatted = remaining.toFixed(2);
 
-    // Update remaining budget display
     budgetDisplay.textContent = `Budget: $${remainingFormatted}`;
 
-    // Remove previous budget color classes
     budgetDisplay.classList.remove('budget-green', 'budget-orange', 'budget-red');
-    budgetProgress.style.background = '';  // Reset progress bar color
+    budgetProgress.style.background = '';
 
-    // Progress bar fill (percentage spent)
     let percentSpent = totalExpenses / totalBudget * 100;
-    if (percentSpent > 100) percentSpent = 100;  // Cap at 100%
+    if (percentSpent > 100) percentSpent = 100;
     budgetProgress.style.width = `${percentSpent}%`;
 
-    // Determine color of the budget display
     if (remaining < 0) {
         budgetDisplay.classList.add('budget-red');
         budgetProgress.style.background = 'red';
@@ -218,7 +193,6 @@ function updateBudgetDisplay() {
     }
 }
 
-// File upload functionality (for .txt files)
 const uploadFile = document.getElementById('uploadFile');
 uploadFile.addEventListener('change', function(event) {
     const file = event.target.files[0];
@@ -227,8 +201,6 @@ uploadFile.addEventListener('change', function(event) {
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            // Assuming each expense is in a line in the format:
-            // name|amount|mainCat|subCat|date
             const lines = e.target.result.split('\n');
             expenses = lines.map(line => {
                 const [name, amount, mainCat, subCat, date] = line.split('|');
@@ -241,10 +213,10 @@ uploadFile.addEventListener('change', function(event) {
     };
     reader.readAsText(file);
 });
-// File download functionality (for .txt files)
+
 const downloadBtn = document.getElementById('downloadBtn');
 downloadBtn.addEventListener('click', function() {
-    // Convert the expenses array into a plain text format
+
     const dataStr = expenses.map(exp => 
         `${exp.name}|${exp.amount.toFixed(2)}|${exp.mainCat}|${exp.subCat}|${exp.date}`
     ).join('\n');
@@ -258,20 +230,18 @@ downloadBtn.addEventListener('click', function() {
     a.click();
     URL.revokeObjectURL(url);
 });
-// DOM Elements
+
 const faqBtn = document.getElementById('faqBtn');
 const faqModal = document.getElementById('faqModal');
 const closeFaqBtn = document.getElementById('closeFaqBtn');
 const faqIframe = document.getElementById('faqIframe');
 
-// Open FAQ Modal and load iframe
 faqBtn.addEventListener('click', function() {
-    faqModal.style.display = 'flex'; // Show modal
-    faqIframe.src = 'finance-ai/faq.html'; // Load the FAQ page into the iframe
+    faqModal.style.display = 'flex';
+    faqIframe.src = 'finance-ai/faq.html';
 });
 
-// Close FAQ Modal
 closeFaqBtn.addEventListener('click', function() {
-    faqModal.style.display = 'none'; // Hide modal
-    faqIframe.src = ''; // Clear the iframe content when closing
+    faqModal.style.display = 'none';
+    faqIframe.src = '';
 });
