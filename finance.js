@@ -10,6 +10,7 @@ const categoryMap = {
 const mainCategories = Object.keys(categoryMap);
 let expenses = [];
 let totalBudget = 0;
+let editingExpenseId = null;
 
 // DOM elements
 const nameInput = document.getElementById('name');
@@ -56,7 +57,7 @@ function updateSubCategories() {
 updateSubCategories();
 mainCategorySelect.addEventListener('change', updateSubCategories);
 
-// Add expense
+// Add or update expense
 addBtn.addEventListener('click', () => {
     const name = nameInput.value.trim();
     let amount = Number(amountInput.value);
@@ -67,7 +68,18 @@ addBtn.addEventListener('click', () => {
 
     if (name === "" || amount <= 0 || date === "") return;
 
-    expenses.push({ id: Date.now(), name, amount, mainCat, subCat, date });
+    if (editingExpenseId) {
+        // Update existing expense
+        const expenseIndex = expenses.findIndex(exp => exp.id === editingExpenseId);
+        expenses[expenseIndex] = { id: editingExpenseId, name, amount, mainCat, subCat, date };
+
+        // Reset edit mode
+        editingExpenseId = null;
+        addBtn.textContent = "Add Expense";
+    } else {
+        // Add new expense
+        expenses.push({ id: Date.now(), name, amount, mainCat, subCat, date });
+    }
 
     nameInput.value = "";
     amountInput.value = "";
@@ -75,7 +87,7 @@ addBtn.addEventListener('click', () => {
     mainCategorySelect.value = mainCategories[0];
     updateSubCategories();
 
-    // Re-render the table and update budget progress
+    // Re-render the table
     render();
 });
 
@@ -100,7 +112,10 @@ function render() {
             <td>${expense.mainCat}</td>
             <td>${expense.subCat}</td>
             <td>${expense.date}</td>
-            <td><button onclick="editExpense(${expense.id})">Edit</button></td>
+            <td>
+                <button onclick="editExpense(${expense.id})">Edit</button>
+                <button onclick="deleteExpense(${expense.id})">Delete</button>
+            </td>
         `;
 
         expenseTable.appendChild(tr);
@@ -114,7 +129,29 @@ function render() {
 
 // Edit expense
 function editExpense(id) {
-    // Implement edit functionality
+    const expense = expenses.find(exp => exp.id === id);
+    if (expense) {
+        // Populate input fields with current expense values
+        nameInput.value = expense.name;
+        amountInput.value = expense.amount;
+        expenseDateInput.value = expense.date;
+        mainCategorySelect.value = expense.mainCat;
+        updateSubCategories();
+        subCategorySelect.value = expense.subCat;
+
+        // Change button to "Save Expense"
+        addBtn.textContent = "Save Expense";
+        editingExpenseId = expense.id;
+    }
+}
+
+// Delete expense
+function deleteExpense(id) {
+    const index = expenses.findIndex(exp => exp.id === id);
+    if (index !== -1) {
+        expenses.splice(index, 1);
+        render(); // Re-render the table after deletion
+    }
 }
 
 // Update the total expenses
@@ -180,3 +217,40 @@ function updateBudgetDisplay() {
         budgetProgress.style.background = 'green';
     }
 }
+
+// File upload functionality
+const uploadFile = document.getElementById('uploadFile');
+uploadFile.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const uploadedExpenses = JSON.parse(e.target.result);
+            if (Array.isArray(uploadedExpenses)) {
+                expenses = uploadedExpenses;
+                render();
+            } else {
+                alert("Invalid file format.");
+            }
+        } catch (error) {
+            alert("Failed to load file.");
+        }
+    };
+    reader.readAsText(file);
+});
+
+// File download functionality
+const downloadBtn = document.getElementById('downloadBtn');
+downloadBtn.addEventListener('click', function() {
+    const dataStr = JSON.stringify(expenses, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'expenses.json';
+    a.click();
+    URL.revokeObjectURL(url);
+});
