@@ -258,3 +258,20 @@ downloadBtn.addEventListener('click', function() {
     a.click();
     URL.revokeObjectURL(url);
 });
+// DOM Elements
+const faqBtn = document.getElementById('faqBtn');
+const faqModal = document.getElementById('faqModal');
+const closeFaqBtn = document.getElementById('closeFaqBtn');
+const faqIframe = document.getElementById('faqIframe');
+
+// Open FAQ Modal and load iframe
+faqBtn.addEventListener('click', function() {
+    faqModal.style.display = 'flex'; // Show modal
+    faqIframe.src = 'finance-ai/faq.html'; // Load the FAQ page into the iframe
+});
+
+// Close FAQ Modal
+closeFaqBtn.addEventListener('click', function() {
+    faqModal.style.display = 'none'; // Hide modal
+    faqIframe.src = ''; // Clear the iframe content when closing
+});

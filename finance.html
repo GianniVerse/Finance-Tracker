@@ -7,8 +7,16 @@
 </head>
 <nav>
     <button onclick="location.href='main.html'">Back</button>
+    <button id="faqBtn">FAQ</button>
 </nav>
+
 <body>
+    <div id="faqModal" class="faq-overlay" style="display:none;">
+    <div class="faq-overlay-content">
+        <button id="closeFaqBtn">Close</button>
+        <iframe id="faqIframe" src="" width="600" height="400" frameborder="0"></iframe>
+    </div>
+</div>
     <!-- Budget Modal Overlay -->
     <div id="budgetOverlay" class="overlay">
         <div class="overlay-content">
