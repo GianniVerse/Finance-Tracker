@@ -218,7 +218,7 @@ function updateBudgetDisplay() {
     }
 }
 
-// File upload functionality
+// File upload functionality (for .txt files)
 const uploadFile = document.getElementById('uploadFile');
 uploadFile.addEventListener('change', function(event) {
     const file = event.target.files[0];
@@ -227,30 +227,34 @@ uploadFile.addEventListener('change', function(event) {
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const uploadedExpenses = JSON.parse(e.target.result);
-            if (Array.isArray(uploadedExpenses)) {
-                expenses = uploadedExpenses;
-                render();
-            } else {
-                alert("Invalid file format.");
-            }
+            // Assuming each expense is in a line in the format:
+            // name|amount|mainCat|subCat|date
+            const lines = e.target.result.split('\n');
+            expenses = lines.map(line => {
+                const [name, amount, mainCat, subCat, date] = line.split('|');
+                return { name, amount: parseFloat(amount), mainCat, subCat, date };
+            });
+            render();
         } catch (error) {
             alert("Failed to load file.");
         }
     };
     reader.readAsText(file);
 });
-
-// File download functionality
+// File download functionality (for .txt files)
 const downloadBtn = document.getElementById('downloadBtn');
 downloadBtn.addEventListener('click', function() {
-    const dataStr = JSON.stringify(expenses, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
+    // Convert the expenses array into a plain text format
+    const dataStr = expenses.map(exp => 
+        `${exp.name}|${exp.amount.toFixed(2)}|${exp.mainCat}|${exp.subCat}|${exp.date}`
+    ).join('\n');
+
+    const blob = new Blob([dataStr], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'expenses.json';
+    a.download = 'expenses.txt';
     a.click();
     URL.revokeObjectURL(url);
 });
