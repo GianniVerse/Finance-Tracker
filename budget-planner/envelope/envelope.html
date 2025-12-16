@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Envelope Budget Planner</title>
+    <link rel="stylesheet" href="../budget.css">
+</head>
+<body>
+
+<h1>Envelope Budget Planner (Sinking Fund Style)</h1>
+
+<!-- Suggested Allocation -->
+<div class="input-card">
+    <h2>Suggested Allocation</h2>
+    <input type="number" id="incomeInput" placeholder="Enter total income" step="0.01">
+    <button id="calcAllocationBtn">Calculate Allocation</button>
+
+    <table id="suggestedTable" border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Recommended %</th>
+                <th>Recommended Amount</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- Envelope Management -->
+<div class="input-card">
+    <h2>Top-Up Envelopes</h2>
+    <select id="topupCategory"></select>
+    <input type="number" id="topupAmount" placeholder="Amount to add" step="0.01">
+    <button id="topupBtn">Add Funds</button>
+</div>
+
+<!-- Expense Entry -->
+<div class="input-card">
+    <h2>Spend from Envelope</h2>
+    <select id="categorySelect"></select>
+    <input type="text" id="name" placeholder="Expense Name">
+    <input type="number" id="amount" placeholder="Amount" step="0.01">
+    <input type="date" id="expenseDate">
+    <button id="addBtn">Add Expense</button>
+</div>
+
+<!-- Expense table -->
+<table id="expenseTable" border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- Envelope balances -->
+<table id="envelopeTotals" border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Current Balance</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- Over Budget Warning -->
+<div id="overBudgetOverlay" class="overlay" style="display:none;">
+    <div class="overlay-content">
+        <h2>Insufficient Funds!</h2>
+        <p>You do not have enough money in this envelope.</p>
+        <button id="overBudgetOkBtn">OK</button>
+    </div>
+</div>
+
+<!-- Download / Upload -->
+<div class="input-card">
+    <button id="downloadBtn">Download Data</button>
+    <input type="file" id="uploadFile" accept=".txt">
+</div>
+
+<script src="envelope.js"></script>
+</body>
+</html>

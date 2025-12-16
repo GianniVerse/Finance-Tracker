@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Budget Planner</title>
+<link rel="stylesheet" href="budget.css">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    select {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        margin-top: 20px;
+    }
+
+    iframe {
+        width: 100%;
+        height: 700px;
+        border: none;
+        margin-top: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .placeholder {
+        text-align: center;
+        color: #777;
+        margin-top: 40px;
+        font-size: 18px;
+    }
+</style>
+</head>
+<body>
+<nav>
+    <button onclick="location.href='main.html'">Back</button>
+    <button id="faqBtn">FAQ</button>
+</nav>
+<div class="container">
+    <h1>Budget Planning Tool</h1>
+
+    <select id="budgetSelector" onchange="loadBudget()">
+        <option value="">Select a Budgeting Method</option>
+        <option value="zero/zero.html">Zero-Based Budget</option>
+        <option value="fifty/fifty.html">50 / 30 / 20 Budget</option>
+        <option value="envelope/envelope.html">Envelope System</option>
+        <option value="payyourself.html">Pay Yourself First</option>
+        <option value="incremental.html">Incremental Budget</option>
+        <option value="activity.html">Activity-Based Budget</option>
+    </select>
+
+    <div id="frameWrapper">
+        <p class="placeholder">
+            Choose a budgeting method above to load its planner.
+        </p>
+    </div>
+</div>
+
+<!-- FAQ Overlay -->
+<div id="faqModal" class="faq-overlay" style="display:none;">
+    <div class="faq-overlay-content">
+        <button id="closeFaqBtn">Close</button>
+        <iframe id="faqIframe" src="" width="600" height="400" frameborder="0"></iframe>
+    </div>
+</div>
+
+<script>
+function loadBudget() {
+    const selector = document.getElementById("budgetSelector");
+    const frameWrapper = document.getElementById("frameWrapper");
+    const file = selector.value;
+
+    if (!file) {
+        frameWrapper.innerHTML = `
+            <p class="placeholder">
+                Choose a budgeting method above to load its planner.
+            </p>`;
+        return;
+    }
+
+    frameWrapper.innerHTML = `
+        <iframe src="${file}" title="Budget Planner"></iframe>
+    `;
+}
+/* FAQ */
+    const faqBtn = document.getElementById("faqBtn");
+    const faqModal = document.getElementById("faqModal");
+    const closeFaqBtn = document.getElementById("closeFaqBtn");
+    const faqIframe = document.getElementById("faqIframe");
+
+    faqBtn.addEventListener("click", () => {
+        faqModal.style.display = "flex";
+        faqIframe.src = "../finance-ai/faq.html";
+    });
+    closeFaqBtn.addEventListener("click", () => {
+        faqModal.style.display = "none";
+        faqIframe.src = "";
+    });
+</script>
+
+</body>
+</html>

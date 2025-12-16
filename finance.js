@@ -1,37 +1,51 @@
+/* =========================
+   Categories
+========================= */
 const categoryMap = {
-    "Food": ["Eating Out", "Groceries", "Snacks", "Restaurants"],
-    "Entertainment": ["Movies", "Games", "Concerts", "Other"],
-    "Clothes": ["Shirts", "Pants", "Shoes", "Accessories"],
-    "Car": ["Fuel", "Rego", "Repair", "Tires", "Other"],
-    "Experiences": ["Travel", "Events", "Workshops", "Other"],
-    "Bills": ["Gas", "Electricity", "Internet", "Water", "Rent"]
+    Food: ["Eating Out", "Groceries", "Snacks", "Restaurants"],
+    Entertainment: ["Movies", "Games", "Concerts", "Other"],
+    Clothes: ["Shirts", "Pants", "Shoes", "Accessories"],
+    Car: ["Fuel", "Rego", "Repair", "Tires", "Other"],
+    Experiences: ["Travel", "Events", "Workshops", "Other"],
+    Bills: ["Gas", "Electricity", "Internet", "Water", "Rent"]
 };
 
 const mainCategories = Object.keys(categoryMap);
+
+/* =========================
+   State
+========================= */
 let expenses = [];
 let totalBudget = 0;
 let editingExpenseId = null;
+let overBudgetShown = false;
 
-const nameInput = document.getElementById('name');
-const amountInput = document.getElementById('amount');
-const mainCategorySelect = document.getElementById('mainCategory');
-const subCategorySelect = document.getElementById('subCategory');
-const expenseDateInput = document.getElementById('expenseDate');
-const addBtn = document.getElementById('addBtn');
-const expenseTable = document.getElementById('expenseTable').querySelector("tbody");
-const totalSpan = document.getElementById('total');
-const categoryTotalsTable = document.getElementById("categoryTotals").querySelector("tbody");
+/* =========================
+   Elements
+========================= */
+const nameInput = document.getElementById("name");
+const amountInput = document.getElementById("amount");
+const expenseDateInput = document.getElementById("expenseDate");
+const mainCategorySelect = document.getElementById("mainCategory");
+const subCategorySelect = document.getElementById("subCategory");
+const addBtn = document.getElementById("addBtn");
 
-const budgetOverlay = document.getElementById('budgetOverlay');
-const initialBudgetInput = document.getElementById('initialBudget');
-const setBudgetBtn = document.getElementById('setBudgetBtn');
-const budgetDisplay = document.getElementById('budgetDisplay');
-const budgetProgress = document.getElementById('budgetProgress');
+const expenseTable = document.querySelector("#expenseTable tbody");
+const totalSpan = document.getElementById("total");
+const categoryTotalsTable = document.querySelector("#categoryTotals tbody");
 
-const overBudgetOverlay = document.getElementById('overBudgetOverlay');
-const overBudgetOkBtn = document.getElementById('overBudgetOkBtn');
-overBudgetOkBtn.addEventListener('click', () => overBudgetOverlay.style.display = 'none');
+const budgetOverlay = document.getElementById("budgetOverlay");
+const initialBudgetInput = document.getElementById("initialBudget");
+const setBudgetBtn = document.getElementById("setBudgetBtn");
+const budgetDisplay = document.getElementById("budgetDisplay");
+const budgetProgress = document.getElementById("budgetProgress");
 
+const overBudgetOverlay = document.getElementById("overBudgetOverlay");
+const overBudgetOkBtn = document.getElementById("overBudgetOkBtn");
+
+/* =========================
+   Init
+========================= */
 mainCategories.forEach(cat => {
     const option = document.createElement("option");
     option.value = cat;
@@ -39,9 +53,35 @@ mainCategories.forEach(cat => {
     mainCategorySelect.appendChild(option);
 });
 
+updateSubCategories();
+budgetOverlay.style.display = "flex";
+
+/* =========================
+   Events
+========================= */
+mainCategorySelect.addEventListener("change", updateSubCategories);
+
+addBtn.addEventListener("click", addOrUpdateExpense);
+
+setBudgetBtn.addEventListener("click", () => {
+    const value = Number(initialBudgetInput.value);
+    if (value <= 0) return alert("Enter a valid budget.");
+
+    totalBudget = Math.round(value * 100) / 100;
+    overBudgetShown = false;
+    budgetOverlay.style.display = "none";
+    updateBudgetDisplay();
+});
+
+overBudgetOkBtn.addEventListener("click", () => {
+    overBudgetOverlay.style.display = "none";
+});
+
+/* =========================
+   Functions
+========================= */
 function updateSubCategories() {
-    const selectedMain = mainCategorySelect.value;
-    const subs = categoryMap[selectedMain];
+    const subs = categoryMap[mainCategorySelect.value];
     subCategorySelect.innerHTML = "";
     subs.forEach(sub => {
         const option = document.createElement("option");
@@ -51,61 +91,69 @@ function updateSubCategories() {
     });
 }
 
-updateSubCategories();
-mainCategorySelect.addEventListener('change', updateSubCategories);
-
-addBtn.addEventListener('click', () => {
+function addOrUpdateExpense() {
     const name = nameInput.value.trim();
-    let amount = Number(amountInput.value);
-    amount = Math.round(amount * 100) / 100;
-    const mainCat = mainCategorySelect.value;
-    const subCat = subCategorySelect.value;
     const date = expenseDateInput.value;
+    let amount = Math.round(Number(amountInput.value) * 100) / 100;
 
-    if (name === "" || amount <= 0 || date === "") return;
+    if (!name || !date || amount <= 0) return;
+
+    const expenseData = {
+        id: editingExpenseId ?? Date.now(),
+        name,
+        amount,
+        mainCat: mainCategorySelect.value,
+        subCat: subCategorySelect.value,
+        date
+    };
 
     if (editingExpenseId) {
-        const expenseIndex = expenses.findIndex(exp => exp.id === editingExpenseId);
-        expenses[expenseIndex] = { id: editingExpenseId, name, amount, mainCat, subCat, date };
+        const index = expenses.findIndex(e => e.id === editingExpenseId);
+        expenses[index] = expenseData;
         editingExpenseId = null;
         addBtn.textContent = "Add Expense";
     } else {
-        expenses.push({ id: Date.now(), name, amount, mainCat, subCat, date });
+        expenses.push(expenseData);
     }
 
+    resetInputs();
+    render();
+}
+
+function resetInputs() {
     nameInput.value = "";
     amountInput.value = "";
     expenseDateInput.value = "";
     mainCategorySelect.value = mainCategories[0];
     updateSubCategories();
-    render();
-});
-
-setBudgetBtn.addEventListener('click', () => {
-    const budget = Number(initialBudgetInput.value);
-    if (budget <= 0) return alert("Enter a valid budget.");
-    totalBudget = Math.round(budget * 100) / 100;
-    updateBudgetDisplay();
-    budgetOverlay.style.display = 'none';
-});
+}
 
 function render() {
     expenseTable.innerHTML = "";
-    expenses.forEach(expense => {
+
+    expenses.forEach(exp => {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-            <td>${expense.name}</td>
-            <td>$${expense.amount.toFixed(2)}</td>
-            <td>${expense.mainCat}</td>
-            <td>${expense.subCat}</td>
-            <td>${expense.date}</td>
-            <td>
-                <button onclick="editExpense(${expense.id})">Edit</button>
-                <button onclick="deleteExpense(${expense.id})">Delete</button>
-            </td>
+            <td>${exp.name}</td>
+            <td>$${exp.amount.toFixed(2)}</td>
+            <td>${exp.mainCat}</td>
+            <td>${exp.subCat}</td>
+            <td>${exp.date}</td>
+            <td></td>
         `;
 
+        const actions = tr.lastElementChild;
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.onclick = () => editExpense(exp.id);
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "Delete";
+        delBtn.onclick = () => deleteExpense(exp.id);
+
+        actions.append(editBtn, delBtn);
         expenseTable.appendChild(tr);
     });
 
@@ -115,25 +163,23 @@ function render() {
 }
 
 function editExpense(id) {
-    const expense = expenses.find(exp => exp.id === id);
-    if (expense) {
-        nameInput.value = expense.name;
-        amountInput.value = expense.amount;
-        expenseDateInput.value = expense.date;
-        mainCategorySelect.value = expense.mainCat;
-        updateSubCategories();
-        subCategorySelect.value = expense.subCat;
-        addBtn.textContent = "Save Expense";
-        editingExpenseId = expense.id;
-    }
+    const exp = expenses.find(e => e.id === id);
+    if (!exp) return;
+
+    nameInput.value = exp.name;
+    amountInput.value = exp.amount;
+    expenseDateInput.value = exp.date;
+    mainCategorySelect.value = exp.mainCat;
+    updateSubCategories();
+    subCategorySelect.value = exp.subCat;
+
+    editingExpenseId = id;
+    addBtn.textContent = "Save Expense";
 }
 
 function deleteExpense(id) {
-    const index = expenses.findIndex(exp => exp.id === id);
-    if (index !== -1) {
-        expenses.splice(index, 1);
-        render();
-    }
+    expenses = expenses.filter(e => e.id !== id);
+    render();
 }
 
 function updateTotal() {
@@ -143,105 +189,102 @@ function updateTotal() {
 
 function updateCategoryTotals() {
     const totals = {};
-    expenses.forEach(e => {
-        totals[e.mainCat] = (totals[e.mainCat] || 0) + e.amount;
-    });
-    const totalsArray = Object.entries(totals).filter(([cat, amount]) => amount > 0).sort((a, b) => b[1] - a[1]);
+    expenses.forEach(e => totals[e.mainCat] = (totals[e.mainCat] || 0) + e.amount);
+
     categoryTotalsTable.innerHTML = "";
-    totalsArray.forEach(([cat, amount]) => {
-        const row = document.createElement("tr");
-        const categoryCell = document.createElement("td");
-        categoryCell.textContent = cat;
-        const totalCell = document.createElement("td");
-        totalCell.textContent = amount.toFixed(2);
-        row.appendChild(categoryCell);
-        row.appendChild(totalCell);
-        categoryTotalsTable.appendChild(row);
-    });
+    Object.entries(totals)
+        .sort((a, b) => b[1] - a[1])
+        .forEach(([cat, amount]) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${cat}</td><td>${amount.toFixed(2)}</td>`;
+            categoryTotalsTable.appendChild(row);
+        });
 }
 
 function updateBudgetDisplay() {
-    const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-    const remaining = totalBudget - totalExpenses;
-    const remainingFormatted = remaining.toFixed(2);
+    if (totalBudget <= 0) {
+        budgetProgress.style.width = "0%";
+        budgetDisplay.textContent = "Budget: $0.00";
+        return;
+    }
 
-    budgetDisplay.textContent = `Budget: $${remainingFormatted}`;
+    const spent = expenses.reduce((s, e) => s + e.amount, 0);
+    const remaining = totalBudget - spent;
 
-    budgetDisplay.classList.remove('budget-green', 'budget-orange', 'budget-red');
-    budgetProgress.style.background = '';
+    budgetDisplay.textContent = `Budget: $${remaining.toFixed(2)}`;
 
-    let percentSpent = totalExpenses / totalBudget * 100;
-    if (percentSpent > 100) percentSpent = 100;
-    budgetProgress.style.width = `${percentSpent}%`;
+    let percent = Math.min((spent / totalBudget) * 100, 100);
+    budgetProgress.style.width = `${percent}%`;
 
-    if (remaining < 0) {
-        budgetDisplay.classList.add('budget-red');
-        budgetProgress.style.background = 'red';
-        overBudgetOverlay.style.display = 'flex';
-    } else if (remaining === 0) {
-        budgetDisplay.classList.add('budget-red');
-        budgetProgress.style.background = 'red';
-    } else if (remaining / totalBudget <= 0.2) {
-        budgetDisplay.classList.add('budget-red');
-        budgetProgress.style.background = 'red';
-    } else if (remaining / totalBudget <= 0.5) {
-        budgetDisplay.classList.add('budget-orange');
-        budgetProgress.style.background = 'orange';
-    } else {
-        budgetDisplay.classList.add('budget-green');
-        budgetProgress.style.background = 'green';
+    budgetDisplay.className = "";
+    budgetProgress.style.background = "green";
+
+    if (remaining <= totalBudget * 0.2) budgetProgress.style.background = "orange";
+    if (remaining <= 0) {
+        budgetProgress.style.background = "red";
+        if (!overBudgetShown) {
+            overBudgetOverlay.style.display = "flex";
+            overBudgetShown = true;
+        }
     }
 }
 
-const uploadFile = document.getElementById('uploadFile');
-uploadFile.addEventListener('change', function(event) {
-    const file = event.target.files[0];
+/* =========================
+   Upload / Download
+========================= */
+document.getElementById("uploadFile").addEventListener("change", e => {
+    const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const lines = e.target.result.split('\n');
-            expenses = lines.map(line => {
-                const [name, amount, mainCat, subCat, date] = line.split('|');
-                return { name, amount: parseFloat(amount), mainCat, subCat, date };
-            });
-            render();
-        } catch (error) {
-            alert("Failed to load file.");
-        }
+    reader.onload = evt => {
+        const lines = evt.target.result.split("\n").filter(l => l.trim());
+        expenses = lines.map(line => {
+            const [name, amount, mainCat, subCat, date] = line.split("|");
+            return {
+                id: Date.now() + Math.random(),
+                name,
+                amount: parseFloat(amount),
+                mainCat,
+                subCat,
+                date
+            };
+        });
+        render();
     };
     reader.readAsText(file);
 });
 
-const downloadBtn = document.getElementById('downloadBtn');
-downloadBtn.addEventListener('click', function() {
+document.getElementById("downloadBtn").addEventListener("click", () => {
+    const data = expenses
+        .map(e => `${e.name}|${e.amount.toFixed(2)}|${e.mainCat}|${e.subCat}|${e.date}`)
+        .join("\n");
 
-    const dataStr = expenses.map(exp => 
-        `${exp.name}|${exp.amount.toFixed(2)}|${exp.mainCat}|${exp.subCat}|${exp.date}`
-    ).join('\n');
-
-    const blob = new Blob([dataStr], { type: 'text/plain' });
+    const blob = new Blob([data], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'expenses.txt';
+    a.download = "expenses.txt";
     a.click();
+
     URL.revokeObjectURL(url);
 });
 
-const faqBtn = document.getElementById('faqBtn');
-const faqModal = document.getElementById('faqModal');
-const closeFaqBtn = document.getElementById('closeFaqBtn');
-const faqIframe = document.getElementById('faqIframe');
+/* =========================
+   FAQ
+========================= */
+const faqBtn = document.getElementById("faqBtn");
+const faqModal = document.getElementById("faqModal");
+const closeFaqBtn = document.getElementById("closeFaqBtn");
+const faqIframe = document.getElementById("faqIframe");
 
-faqBtn.addEventListener('click', function() {
-    faqModal.style.display = 'flex';
-    faqIframe.src = 'finance-ai/faq.html';
-});
+faqBtn.onclick = () => {
+    faqModal.style.display = "flex";
+    faqIframe.src = "finance-ai/faq.html";
+};
 
-closeFaqBtn.addEventListener('click', function() {
-    faqModal.style.display = 'none';
-    faqIframe.src = '';
-});
+closeFaqBtn.onclick = () => {
+    faqModal.style.display = "none";
+    faqIframe.src = "";
+};

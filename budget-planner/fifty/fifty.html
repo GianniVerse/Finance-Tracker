@@ -2,85 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Expense Tracker</title>
-    <link rel="stylesheet" href="style.css">
+    <title>50/30/20 Budget Planner</title>
+    <link rel="stylesheet" href="../budget.css">
 </head>
-<nav>
-    <button onclick="location.href='main.html'">Back</button>
-    <button id="faqBtn">FAQ</button>
-</nav>
-
 <body>
-    <div id="faqModal" class="faq-overlay" style="display:none;">
-    <div class="faq-overlay-content">
-        <button id="closeFaqBtn">X</button>
-        <iframe id="faqIframe" src="" width="600" height="400" frameborder="0"></iframe>
-    </div>
-</div>
+    <!-- Budget Overlay -->
     <div id="budgetOverlay" class="overlay">
         <div class="overlay-content">
-            <h2>Set Your Budget</h2>
-            <input type="number" id="initialBudget" placeholder="Enter your budget" step="0.01">
+            <h2>Set Your Total Budget</h2>
+            <input type="number" id="initialBudget" placeholder="Enter total budget" step="0.01">
             <button id="setBudgetBtn">Set Budget</button>
         </div>
     </div>
 
+    <!-- Over Budget Overlay -->
     <div id="overBudgetOverlay" class="overlay" style="display:none;">
         <div class="overlay-content">
             <h2>Warning!</h2>
-            <p>You are over budget!</p>
+            <p>You are over your section budget!</p>
             <button id="overBudgetOkBtn">OK</button>
         </div>
     </div>
 
+    <!-- Budget display -->
     <div id="budgetDisplay">Budget: $0</div>
     <div id="budgetProgressContainer">
         <div id="budgetProgress"></div>
     </div>
 
-    <h1>Personal Expense Tracker</h1>
+    <h1>50/30/20 Budget Planner</h1>
 
+    <!-- Input card for adding expenses -->
     <div class="input-card">
+        <select id="sectionSelect">
+            <option value="needs">Needs (50%)</option>
+            <option value="wants">Wants (30%)</option>
+        </select>
+
+        <select id="mainCategory"></select>
+        <select id="subCategory"></select>
+
         <input type="text" id="name" placeholder="Expense Name">
         <input type="number" id="amount" placeholder="Amount" step="0.01">
         <input type="date" id="expenseDate">
-        <select id="mainCategory"></select>
-        <select id="subCategory"></select>
+
         <button id="addBtn">Add Expense</button>
     </div>
 
+    <!-- Expense table -->
     <table id="expenseTable" border="1" cellpadding="5">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Amount</th>
+                <th>Section</th>
                 <th>Main Category</th>
                 <th>Sub Category</th>
                 <th>Date</th>
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
     </table>
 
-    <table id="categoryTotals" border="1" cellpadding="5">
+    <!-- Totals per section -->
+    <table id="sectionTotals" border="1" cellpadding="5">
         <thead>
             <tr>
-                <th>Category</th>
+                <th>Section</th>
                 <th>Total Amount</th>
+                <th>Limit</th>
             </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
     </table>
 
-    <h2>Total: $<span id="total">0.00</span></h2>
+    <!-- Download/upload -->
     <div class="input-card">
         <button id="downloadBtn">Download Data</button>
         <input type="file" id="uploadFile" accept=".txt">
     </div>
 
-    <script src="finance.js"></script>
+    <script src="fifty.js"></script>
 </body>
 </html>

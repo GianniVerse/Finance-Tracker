@@ -1,48 +1,37 @@
 /* =========================
-   Base
+   Body & General
 ========================= */
-* {
-    box-sizing: border-box;
-}
-
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background: #f4f7fa;
     color: #333;
     margin: 0;
     padding: 20px;
 }
 
-/* =========================
-   Cards & Inputs
-========================= */
+h1, h2 {
+    text-align: center;
+}
+
 .input-card {
     background: #fff;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-input,
-select,
-button {
+input, select, button {
     padding: 8px;
+    border: 2px solid #ccc;
     border-radius: 5px;
     outline: none;
-    font-size: 0.95rem;
 }
 
-input,
-select {
-    border: 2px solid #ccc;
-}
-
-input:focus,
-select:focus {
+input:focus, select:focus {
     border-color: #007bff;
 }
 
@@ -51,7 +40,7 @@ button {
     background: #007bff;
     color: #fff;
     border: none;
-    transition: background 0.2s ease;
+    transition: 0.2s;
 }
 
 button:hover {
@@ -70,63 +59,72 @@ table {
     overflow: hidden;
 }
 
-th,
-td {
+th, td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
 th {
-    background: #f0f2f5;
-    font-weight: bold;
+    background: #007bff;
+    color: #fff;
 }
 
 /* =========================
-   Overlays (Budget + Warning)
+   Overlays
 ========================= */
 .overlay {
-    display: flex;
+    display: flex; 
     align-items: center;
     justify-content: center;
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
     z-index: 10;
 }
 
 .overlay-content {
-    background: #fff;
+    background: white;
     padding: 30px;
     border-radius: 10px;
     text-align: center;
-    min-width: 280px;
+    max-width: 90%;
+}
+
+#overBudgetOverlay p {
+    font-weight: bold;
+    color: #e53935;
 }
 
 /* =========================
-   Budget Display
+   Budget Bar & Display
 ========================= */
 #budgetDisplay {
     position: fixed;
     top: 10px;
     right: 10px;
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.2em;
     z-index: 5;
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 6px;
+    padding: 5px 10px;
+    border-radius: 5px;
     background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 #budgetProgressContainer {
+    position: fixed;
+    top: 10px;
+    left: 10px;
     width: 200px;
-    height: 15px;
+    height: 20px;
     background: #e0e0e0;
     border-radius: 8px;
     overflow: hidden;
-    margin-top: 5px;
     border: 1px solid #ccc;
 }
 
@@ -135,30 +133,32 @@ th {
     width: 0%;
     background: green;
     transition: width 0.3s ease, background 0.3s ease;
+    border-radius: 8px;
 }
 
-/* Budget states */
+/* Budget colors */
 .budget-green {
     color: #28a745;
 }
-
 .budget-orange {
-    color: #ff9800;
+    color: #ffca28;
 }
-
 .budget-red {
-    color: #e53935;
+    color: #e53935; 
 }
 
 /* =========================
    FAQ Overlay
 ========================= */
 .faq-overlay {
-    display: flex;
+    display: flex; 
     align-items: center;
     justify-content: center;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.7);
     z-index: 100;
 }
@@ -176,7 +176,6 @@ th {
 #faqIframe {
     width: 700px;
     height: 400px;
-    max-width: 100%;
     border: none;
     margin-top: 20px;
 }
@@ -185,16 +184,36 @@ th {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: #e53935;
+    background-color: #e53935;
     color: #fff;
     border: none;
-    width: 36px;
-    height: 36px;
+    padding: 10px;
     border-radius: 50%;
-    font-weight: bold;
     cursor: pointer;
 }
 
 #closeFaqBtn:hover {
-    background: #c1351d;
+    background-color: #c1351d;
+}
+
+/* =========================
+   Responsive Adjustments
+========================= */
+@media(max-width: 900px) {
+    #budgetProgressContainer {
+        width: 150px;
+    }
+    #faqIframe {
+        width: 90%;
+        height: 300px;
+    }
+}
+
+@media(max-width: 600px) {
+    .input-card {
+        flex-direction: column;
+    }
+    #budgetDisplay {
+        font-size: 1em;
+    }
 }
