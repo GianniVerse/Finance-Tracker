@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activity-Based Budget Planner</title>
+    <link rel="stylesheet" href="../budget.css">
+</head>
+<body>
+
+<!-- Setup Overlay -->
+<div id="setupOverlay" class="overlay">
+    <div class="overlay-content">
+        <h2>Activity-Based Budget Planner</h2>
+        <input type="number" id="incomeInput" placeholder="Total Income" step="0.01">
+        <button id="setupBtn">Start Budget</button>
+    </div>
+</div>
+
+<!-- Over Budget Overlay -->
+<div id="overBudgetOverlay" class="overlay" style="display:none;">
+    <div class="overlay-content">
+        <h2>Warning</h2>
+        <p>You have overspent in this activity!</p>
+        <button id="overBudgetOkBtn">OK</button>
+    </div>
+</div>
+
+<div id="budgetDisplay">Remaining: $0</div>
+<div id="budgetProgressContainer">
+    <div id="budgetProgress"></div>
+</div>
+
+<h1>Activity-Based Budget Planner</h1>
+
+<div class="input-card">
+    <select id="mainCategory"></select>
+    <select id="subCategory"></select>
+
+    <input type="text" id="name" placeholder="Activity Name">
+    <input type="number" id="amount" placeholder="Amount" step="0.01">
+    <input type="date" id="activityDate">
+
+    <button id="addBtn">Add Activity</button>
+</div>
+
+<table id="activityTable" border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Sub Category</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<table id="totalsTable" border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- Download/upload -->
+<div class="input-card">
+    <button id="downloadBtn">Download Data</button>
+    <input type="file" id="uploadFile" accept=".txt">
+</div>
+
+<script src="activity.js"></script>
+</body>
+</html>

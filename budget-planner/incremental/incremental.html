@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Incremental Budget Planner</title>
+    <link rel="stylesheet" href="../budget.css">
+</head>
+<body>
+
+<!-- Setup Overlay -->
+<div id="setupOverlay" class="overlay">
+    <div class="overlay-content">
+        <h2>Incremental Budget Setup</h2>
+        <p>Enter last month's budget for each category:</p>
+        <div id="lastBudgetInputs"></div>
+        <button id="setupBtn">Create New Budget</button>
+    </div>
+</div>
+
+<!-- Over Budget Overlay -->
+<div id="overBudgetOverlay" class="overlay" style="display:none;">
+    <div class="overlay-content">
+        <h2>Warning</h2>
+        <p>You have overspent in this category!</p>
+        <button id="overBudgetOkBtn">OK</button>
+    </div>
+</div>
+
+<h1>Incremental Budget Planner</h1>
+
+<div class="input-card">
+    <select id="categorySelect"></select>
+    <input type="text" id="expenseName" placeholder="Expense Name">
+    <input type="number" id="expenseAmount" placeholder="Amount" step="0.01">
+    <input type="date" id="expenseDate">
+    <button id="addBtn">Add Expense</button>
+</div>
+
+<table id="expenseTable" border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<table id="budgetTable" border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Last Budget</th>
+            <th>Increment</th>
+            <th>New Budget</th>
+            <th>Spent</th>
+            <th>Remaining</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<div class="input-card">
+    <button id="downloadBtn">Download Budget</button>
+    <input type="file" id="uploadFile" accept=".txt">
+</div>
+
+<script src="incremental.js"></script>
+</body>
+</html>
