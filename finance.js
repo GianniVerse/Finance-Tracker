@@ -16,9 +16,7 @@ const mainCategories = Object.keys(categoryMap);
    State
 ========================= */
 let expenses = [];
-let totalBudget = 0;
 let editingExpenseId = null;
-let overBudgetShown = false;
 
 /* =========================
    Elements
@@ -34,15 +32,6 @@ const expenseTable = document.querySelector("#expenseTable tbody");
 const totalSpan = document.getElementById("total");
 const categoryTotalsTable = document.querySelector("#categoryTotals tbody");
 
-const budgetOverlay = document.getElementById("budgetOverlay");
-const initialBudgetInput = document.getElementById("initialBudget");
-const setBudgetBtn = document.getElementById("setBudgetBtn");
-const budgetDisplay = document.getElementById("budgetDisplay");
-const budgetProgress = document.getElementById("budgetProgress");
-
-const overBudgetOverlay = document.getElementById("overBudgetOverlay");
-const overBudgetOkBtn = document.getElementById("overBudgetOkBtn");
-
 /* =========================
    Init
 ========================= */
@@ -54,28 +43,6 @@ mainCategories.forEach(cat => {
 });
 
 updateSubCategories();
-budgetOverlay.style.display = "flex";
-
-/* =========================
-   Events
-========================= */
-mainCategorySelect.addEventListener("change", updateSubCategories);
-
-addBtn.addEventListener("click", addOrUpdateExpense);
-
-setBudgetBtn.addEventListener("click", () => {
-    const value = Number(initialBudgetInput.value);
-    if (value <= 0) return alert("Enter a valid budget.");
-
-    totalBudget = Math.round(value * 100) / 100;
-    overBudgetShown = false;
-    budgetOverlay.style.display = "none";
-    updateBudgetDisplay();
-});
-
-overBudgetOkBtn.addEventListener("click", () => {
-    overBudgetOverlay.style.display = "none";
-});
 
 /* =========================
    Functions
@@ -159,7 +126,6 @@ function render() {
 
     updateTotal();
     updateCategoryTotals();
-    updateBudgetDisplay();
 }
 
 function editExpense(id) {
@@ -199,34 +165,6 @@ function updateCategoryTotals() {
             row.innerHTML = `<td>${cat}</td><td>${amount.toFixed(2)}</td>`;
             categoryTotalsTable.appendChild(row);
         });
-}
-
-function updateBudgetDisplay() {
-    if (totalBudget <= 0) {
-        budgetProgress.style.width = "0%";
-        budgetDisplay.textContent = "Budget: $0.00";
-        return;
-    }
-
-    const spent = expenses.reduce((s, e) => s + e.amount, 0);
-    const remaining = totalBudget - spent;
-
-    budgetDisplay.textContent = `Budget: $${remaining.toFixed(2)}`;
-
-    let percent = Math.min((spent / totalBudget) * 100, 100);
-    budgetProgress.style.width = `${percent}%`;
-
-    budgetDisplay.className = "";
-    budgetProgress.style.background = "green";
-
-    if (remaining <= totalBudget * 0.2) budgetProgress.style.background = "orange";
-    if (remaining <= 0) {
-        budgetProgress.style.background = "red";
-        if (!overBudgetShown) {
-            overBudgetOverlay.style.display = "flex";
-            overBudgetShown = true;
-        }
-    }
 }
 
 /* =========================
